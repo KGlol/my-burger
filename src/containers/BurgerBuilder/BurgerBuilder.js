@@ -17,7 +17,31 @@ class BurgerBuilder extends Component {
       salad: 0,
       bacon: 0
     },
-    totalPrice: 4
+    totalPrice: 4,
+    purchasable: false//是否可定汉堡的变量
+  }
+
+  
+  purchaseHandler = (ingredents) => {
+    /**
+     * 1. 以addIngredentHandler中的updateIngredents作为参数出入的目的是
+     *    使purchaseHandler能够获得最新的this.state.ingredents,
+     *    修正在其函数体内部通过...(展开操作符)获取this.state的老版本,
+     *    bug原因: setstate 是异步的??
+     * 
+     * 2. purchaseHandler在addIngerdentHandler和removeIngrednetHandler中被调用,
+     *    以此更新state.purchaseable的状态, 传递给BurgerControls的button的disbaled属性
+     * 
+     * 3. Object.values以数组的形式返回对象的值
+     *  */
+    // const ingredents = {
+    //   ...this.state.ingredents
+    // }
+    const sum = Object.values(ingredents)
+      .reduce((sum, el) => {
+        return sum + el;
+      }, 0);
+    this.setState({purchasable: sum > 0});
   }
 
   addIngredentHandler = (type) => {
@@ -30,6 +54,7 @@ class BurgerBuilder extends Component {
     updatedIngredents[type] = updatedCount;
     let gainPrice = totalPrice + INGREDENT_PRICES[type];
     this.setState({ingredents: updatedIngredents, totalPrice: gainPrice});
+    this.purchaseHandler(updatedIngredents);
   }
 
   removeIngredentHandler = (type) => {
@@ -45,6 +70,7 @@ class BurgerBuilder extends Component {
     updatedIngredents[type] = updatedCount;
     let deduction = totalPrice - INGREDENT_PRICES[type];
     this.setState({ingredents: updatedIngredents, totalPrice: deduction});
+    this.purchaseHandler(updatedIngredents);
   }
   
   render () {
@@ -52,8 +78,12 @@ class BurgerBuilder extends Component {
     const disabledInfo = {
       ...this.state.ingredents
     };
+    // console.log(Object.values(disabledInfo)
+    //   .reduce((sum, el) => {
+    //     return sum + el;
+    //   }, 0))
     for (let key in disabledInfo) {
-      disabledInfo[key] = disabledInfo[key] <= 0
+      disabledInfo[key] = disabledInfo[key] <= 0;
     };
     //{salad: true, cheese: false,...}
     return ( 
@@ -63,7 +93,8 @@ class BurgerBuilder extends Component {
           add={this.addIngredentHandler} 
           remove={this.removeIngredentHandler}
           disabledInfo={disabledInfo}
-          price={this.state.totalPrice} />
+          price={this.state.totalPrice}
+          disabled={this.state.purchasable} />
       </Aux>
     )
   }

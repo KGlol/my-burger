@@ -21,6 +21,9 @@ const burgerControls = ( props ) =>
                   remove={() => props.remove(control.type)}
                   disabledInfo={props.disabledInfo[control.type]} />)
     }
+    <button 
+    className={classes.OrderButton}
+    disabled={!props.disabled}>Order Now</button>
   </div>
 
 export default burgerControls;
