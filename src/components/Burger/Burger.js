@@ -4,11 +4,16 @@ import BurgerIngredent from './BurgerIngredent/BurgerIngredent';
 import classes from './Burger.module.scss';
 
 const burger = ( props ) => {
-  const transformedIngredents = Object.keys(props.ingredents)
+  let transformedIngredents = Object.keys( props.ingredents )
     .map( ingKey => [...Array(props.ingredents[ingKey])]
       .map( (_, i) => <BurgerIngredent key={ingKey + i} type={ingKey} /> )
-    );
-  // console.log(Object.keys(props.ingredents).map(ingKeys => console.log(ingKeys, props.ingredents[ingKeys])));
+    ).reduce( (arr, el) => {
+      return arr.concat(el)}, []);
+  if ( transformedIngredents.length === 0 )  //transformIngredent数组长度为空时,输出提示；     
+  {
+    transformedIngredents = <p>Please add some ingredents</p>;
+  }
+
   return (
     <div className={classes.Burger}>
       <BurgerIngredent type="bread-top" />  
