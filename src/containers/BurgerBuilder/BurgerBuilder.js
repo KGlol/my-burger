@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import Aux from '../../hoc/Aux';
 import Burger from '../../components/Burger/Burger';
 import BurgerControls from '../../components/Burger/BurgerControls/BurgerControls';
-
+import Madol from '../../components/UI/Modal/Modal';
+import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 const INGREDENT_PRICES = {//全局参数
   salad: .5,
   cheese: .4,
@@ -18,11 +19,12 @@ class BurgerBuilder extends Component {
       bacon: 0
     },
     totalPrice: 4,
-    purchasable: false//是否可定汉堡的变量
+    purchasable: false,//是否可定汉堡的变量
+    purchasing: false //是否弹出orderSummary的变量
   }
 
   
-  purchaseHandler = (ingredents) => {
+  purchasableHandler = (ingredents) => {
     /**
      * 1. 以addIngredentHandler中的updateIngredents作为参数出入的目的是
      *    使purchaseHandler能够获得最新的this.state.ingredents,
@@ -44,6 +46,11 @@ class BurgerBuilder extends Component {
     this.setState({purchasable: sum > 0});
   }
 
+  purchasingHandler = () => {
+    this.setState({purchasing: true});
+    console.log(this.state.purchasing);
+  }
+
   addIngredentHandler = (type) => {
     const oldCount = this.state.ingredents[type];
     const updatedCount = oldCount + 1;
@@ -54,7 +61,7 @@ class BurgerBuilder extends Component {
     updatedIngredents[type] = updatedCount;
     let gainPrice = totalPrice + INGREDENT_PRICES[type];
     this.setState({ingredents: updatedIngredents, totalPrice: gainPrice});
-    this.purchaseHandler(updatedIngredents);
+    this.purchasableHandler(updatedIngredents);
   }
 
   removeIngredentHandler = (type) => {
@@ -70,7 +77,7 @@ class BurgerBuilder extends Component {
     updatedIngredents[type] = updatedCount;
     let deduction = totalPrice - INGREDENT_PRICES[type];
     this.setState({ingredents: updatedIngredents, totalPrice: deduction});
-    this.purchaseHandler(updatedIngredents);
+    this.purchasableHandler(updatedIngredents);
   }
   
   render () {
@@ -78,6 +85,13 @@ class BurgerBuilder extends Component {
     const disabledInfo = {
       ...this.state.ingredents
     };
+    //普通事件绑定实现modal的出现
+    // const modal = (this.state.purchasing? 
+    // <Madol>
+    //   <OrderSummary ingredents={this.state.ingredents}/>
+    // </Madol> : null);
+    // console.log({modal});
+    //////////////////////////////////////////////////////
     // console.log(Object.values(disabledInfo)
     //   .reduce((sum, el) => {
     //     return sum + el;
@@ -86,15 +100,25 @@ class BurgerBuilder extends Component {
       disabledInfo[key] = disabledInfo[key] <= 0;
     };
     //{salad: true, cheese: false,...}
+    
     return ( 
-      <Aux>
+      <Aux> 
+        <Madol purchasing={this.state.purchasing}
+        /** 样式应加在html元素上,而不是加在组件上
+                * style={{transform: this.state.purchasing ? 
+              'translateY(0)' : 'translateY(-100vh)',
+              opacity:this.state.purchasing ? '1' : '0'}}
+             */ >
+          <OrderSummary ingredents={this.state.ingredents}/>
+        </Madol>
         <Burger ingredents={this.state.ingredents} />
         <BurgerControls 
           add={this.addIngredentHandler} 
           remove={this.removeIngredentHandler}
           disabledInfo={disabledInfo}
           price={this.state.totalPrice}
-          disabled={this.state.purchasable} />
+          disabled={this.state.purchasable} 
+          purchasing={this.purchasingHandler}/>
       </Aux>
     )
   }
