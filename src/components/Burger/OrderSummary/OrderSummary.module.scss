@@ -1,0 +1,12 @@
+.Cancel {
+  width: 30%;
+  outline: none;
+  cursor: pointer;
+  border: 1px solid #966909;
+  border-radius: 500px;
+  color: #966909;
+  font-family: inherit;
+  &:not(:last-child) {
+    margin-right: 40%;
+  }
+}

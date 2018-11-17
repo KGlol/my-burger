@@ -46,9 +46,18 @@ class BurgerBuilder extends Component {
     this.setState({purchasable: sum > 0});
   }
 
+  //控制checkout button disable属性的函数
   purchasingHandler = () => {
     this.setState({purchasing: true});
-    console.log(this.state.purchasing);
+    // console.log(this.state.purchasing);
+  }
+  //关闭Backdrop和Modal组件的控制函数
+  purchaseCancelHandler = () => {
+    this.setState({purchasing: false})
+  }
+  //Modal组件中的continue按钮的事件处理函数
+  purchaseContinueHandler = (totalPrice) => {
+    alert ('Pay the money'+totalPrice);
   }
 
   addIngredentHandler = (type) => {
@@ -103,13 +112,21 @@ class BurgerBuilder extends Component {
     
     return ( 
       <Aux> 
-        <Madol purchasing={this.state.purchasing}
-        /** 样式应加在html元素上,而不是加在组件上
+        <Madol 
+          purchasing={this.state.purchasing}
+          clicked={this.purchaseCancelHandler}
+            /** 样式应加在html元素上,而不是加在组件上
                 * style={{transform: this.state.purchasing ? 
               'translateY(0)' : 'translateY(-100vh)',
               opacity:this.state.purchasing ? '1' : '0'}}
-             */ >
-          <OrderSummary ingredents={this.state.ingredents}/>
+             */
+        >
+          <OrderSummary 
+            ingredents={this.state.ingredents} 
+            price={this.state.totalPrice}
+            canceled={this.purchaseCancelHandler} 
+            continued={ this.purchaseContinueHandler}
+          />
         </Madol>
         <Burger ingredents={this.state.ingredents} />
         <BurgerControls 
@@ -118,7 +135,8 @@ class BurgerBuilder extends Component {
           disabledInfo={disabledInfo}
           price={this.state.totalPrice}
           disabled={this.state.purchasable} 
-          purchasing={this.purchasingHandler}/>
+          purchasing={this.purchasingHandler}
+        />
       </Aux>
     )
   }
