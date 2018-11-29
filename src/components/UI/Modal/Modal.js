@@ -9,7 +9,7 @@ class Modal extends Component {
 
   shouldComponentUpdate( nextProps ) {
     //当OrderSummary组件的副父件的purchasing变化时,才会更新Modal和一起OrderSummary的更新,且不会影响其他功能
-    return nextProps.purchasing !== this.props.purchasing;
+    return nextProps.purchasing !== this.props.purchasing || nextProps.children !== this.props.children;
   }
 
   render() {

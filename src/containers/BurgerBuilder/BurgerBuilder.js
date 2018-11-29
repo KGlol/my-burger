@@ -4,6 +4,9 @@ import Burger from '../../components/Burger/Burger';
 import BurgerControls from '../../components/Burger/BurgerControls/BurgerControls';
 import Madol from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
+import axiosOrder from '../../axios-orders';
+import Spinner from '../../components/UI/Spinner/Spinner';
+
 const INGREDENT_PRICES = {//全局参数
   salad: .5,
   cheese: .4,
@@ -20,7 +23,8 @@ class BurgerBuilder extends Component {
     },
     totalPrice: 4,
     purchasable: false,//是否可定汉堡的变量
-    purchasing: false //是否弹出orderSummary的变量
+    purchasing: false ,//是否弹出orderSummary的变量
+    loading: false//显示ordersummary或者spinner
   }
 
   
@@ -57,7 +61,23 @@ class BurgerBuilder extends Component {
   }
   //Modal组件中的continue按钮的事件处理函数
   purchaseContinueHandler = (totalPrice) => {
-    alert ('Pay the money'+totalPrice);
+    this.setState( { loading: true } );
+    // alert ('Pay the money'+totalPrice);
+    const order = {
+      ingredents: this.state.ingredents,
+      totalPrice: this.state.totalPrice,
+      userName: 'kg',
+      address: {
+        country: 'China',
+        city: 'shanghai',
+        location: 'scscscscs'
+      },
+      deliveryMethod: 'faster'
+    }
+
+    axiosOrder.post('/orders.json', order)
+      .then( response => this.setState( { loading: false, purchasing: false } ) )
+      .catch( error => this.setState( { loading: false, purchasing: false } ) );
   }
 
   addIngredentHandler = (type) => {
@@ -109,6 +129,15 @@ class BurgerBuilder extends Component {
       disabledInfo[key] = disabledInfo[key] <= 0;
     };
     //{salad: true, cheese: false,...}
+
+    const orderSummary = this.state.loading ?
+      <Spinner/> :  
+      <OrderSummary 
+        ingredents={this.state.ingredents} 
+        price={this.state.totalPrice}
+        canceled={this.purchaseCancelHandler} 
+        continued={ this.purchaseContinueHandler}
+      />;
     
     return ( 
       <Aux> 
@@ -121,12 +150,7 @@ class BurgerBuilder extends Component {
               opacity:this.state.purchasing ? '1' : '0'}}
              */
         >
-          <OrderSummary 
-            ingredents={this.state.ingredents} 
-            price={this.state.totalPrice}
-            canceled={this.purchaseCancelHandler} 
-            continued={ this.purchaseContinueHandler}
-          />
+          {orderSummary}
         </Madol>
         <Burger ingredents={this.state.ingredents} />
         <BurgerControls 
