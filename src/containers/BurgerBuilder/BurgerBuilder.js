@@ -28,13 +28,16 @@ class BurgerBuilder extends Component {
     loading: false//显示ordersummary或者spinner
   }
 
-  // componentDidMount () {
-  //   axiosOrder.get('/gredents.json')//.json不要忘记
-  //     .then( response => console.log(response.data)
-  //     .catch( error => console.log(error) )
-  //       // this.setState({ingrendents: response.data.ingrednets})
-  //     );
-  // }
+  componentDidMount () {
+    axiosOrder.get('/gredents.json')//.json不要忘记
+      .then( response => {
+        console.log(response.data);
+        this.setState(( prevState ) => prevState.ingredents = response.data);//解决异步性的问题
+        console.log(this.state.ingredents)
+        })
+        //grendents下就是内容,所以response.data中装的是内容
+      //当state=null,且需要fetch后才能在组件中使用时(DidMount),组件中使用stste的变量在DidMount之前就要使用,所以会加载失败,
+  }
   
   purchasableHandler = (ingredents) => {
     /**
