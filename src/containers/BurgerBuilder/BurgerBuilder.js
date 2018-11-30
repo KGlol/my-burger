@@ -6,6 +6,7 @@ import Madol from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import axiosOrder from '../../axios-orders';
 import Spinner from '../../components/UI/Spinner/Spinner';
+import withErrorHander from '../../hoc/withErrorHander/withErrorHander';
 
 const INGREDENT_PRICES = {//全局参数
   salad: .5,
@@ -27,6 +28,13 @@ class BurgerBuilder extends Component {
     loading: false//显示ordersummary或者spinner
   }
 
+  // componentDidMount () {
+  //   axiosOrder.get('/gredents.json')//.json不要忘记
+  //     .then( response => console.log(response.data)
+  //     .catch( error => console.log(error) )
+  //       // this.setState({ingrendents: response.data.ingrednets})
+  //     );
+  // }
   
   purchasableHandler = (ingredents) => {
     /**
@@ -166,4 +174,4 @@ class BurgerBuilder extends Component {
   }
 }
 
-export default BurgerBuilder;
+export default withErrorHander(BurgerBuilder, axiosOrder);
