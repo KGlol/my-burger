@@ -31,9 +31,7 @@ class BurgerBuilder extends Component {
   componentDidMount () {
     axiosOrder.get('/gredents.json')//.json不要忘记
       .then( response => {
-        console.log(response.data);
         this.setState(( prevState ) => prevState.ingredents = response.data);//解决异步性的问题
-        console.log(this.state.ingredents)
         })
         //grendents下就是内容,所以response.data中装的是内容
       //当state=null,且需要fetch后才能在组件中使用时(DidMount),组件中使用stste的变量在DidMount之前就要使用,所以会加载失败,
@@ -72,23 +70,24 @@ class BurgerBuilder extends Component {
   }
   //Modal组件中的continue按钮的事件处理函数
   purchaseContinueHandler = (totalPrice) => {
-    this.setState( { loading: true } );
-    // alert ('Pay the money'+totalPrice);
-    const order = {
-      ingredents: this.state.ingredents,
-      totalPrice: this.state.totalPrice,
-      userName: 'kg',
-      address: {
-        country: 'China',
-        city: 'shanghai',
-        location: 'scscscscs'
-      },
-      deliveryMethod: 'faster'
-    }
+    // this.setState( { loading: true } );
+    // // alert ('Pay the money'+totalPrice);
+    // const order = {
+    //   ingredents: this.state.ingredents,
+    //   totalPrice: this.state.totalPrice,
+    //   userName: 'kg',
+    //   address: {
+    //     country: 'China',
+    //     city: 'shanghai',
+    //     location: 'scscscscs'
+    //   },
+    //   deliveryMethod: 'faster'
+    // }
 
-    axiosOrder.post('/orders.json', order)
-      .then( response => this.setState( { loading: false, purchasing: false } ) )
-      .catch( error => this.setState( { loading: false, purchasing: false } ) );
+    // axiosOrder.post('/orders.json', order)
+    //   .then( response => this.setState( { loading: false, purchasing: false } ) )
+    //   .catch( error => this.setState( { loading: false, purchasing: false } ) );
+    this.props.history.push('/checkout');
   }
 
   addIngredentHandler = (type) => {
@@ -171,7 +170,7 @@ class BurgerBuilder extends Component {
           price={this.state.totalPrice}
           disabled={this.state.purchasable} 
           purchasing={this.purchasingHandler}
-        />
+      />
       </Aux>
     )
   }
