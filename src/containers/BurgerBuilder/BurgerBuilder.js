@@ -81,13 +81,24 @@ class BurgerBuilder extends Component {
     //     city: 'shanghai',
     //     location: 'scscscscs'
     //   },
-    //   deliveryMethod: 'faster'
+    //   deliveryMethod: 'fastest'
     // }
 
     // axiosOrder.post('/orders.json', order)
     //   .then( response => this.setState( { loading: false, purchasing: false } ) )
     //   .catch( error => this.setState( { loading: false, purchasing: false } ) );
-    this.props.history.push('/checkout');
+    
+    //向Checkout组件传递ingredends参数
+    const queryParams = [];
+    for (let i in this.state.ingredents) {
+      queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredents[i]));
+    }
+    const queryString = queryParams.join('&');
+    // console.log(queryString),输出为bacon=0&cheese=0&meat=0&salad=1的字符串形式
+    this.props.history.push({
+      pathname: '/checkout',//pathname小写
+      search:'?' + queryString
+    });
   }
 
   addIngredentHandler = (type) => {
@@ -148,7 +159,7 @@ class BurgerBuilder extends Component {
         canceled={this.purchaseCancelHandler} 
         continued={ this.purchaseContinueHandler}
       />;
-    
+
     return ( 
       <Aux> 
         <Madol 
