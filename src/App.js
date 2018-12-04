@@ -5,7 +5,7 @@ import Checkout from './containers/Checkout/Checkout';
 
 import { Route, Switch } from 'react-router-dom';
 
-import './App.scss';
+import './App.module.scss';
 
 class App extends Component {
   render() {

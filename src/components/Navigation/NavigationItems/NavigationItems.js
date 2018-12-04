@@ -6,9 +6,8 @@ import classes from './NavigationItems.module.scss';
 
 const navigationItems = () => (
   <ul className={classes.NavigationItems}>
-    <NavigationItem link="/" active >Burger</NavigationItem>
+    <NavigationItem link="/" >Burger</NavigationItem>
     <NavigationItem link="/checkout/contact-data" >Checkout</NavigationItem>
-    
   </ul>
 );
 

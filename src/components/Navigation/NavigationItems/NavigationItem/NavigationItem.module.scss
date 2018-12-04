@@ -5,15 +5,17 @@
   display: block;
 
   & a {
-    color: #8F5C2C;
-    text-decoration: none;
-    width: 100%;
-    box-sizing: border-box;
-    display: block;
-
+    &:link,
+    &:visited {
+      color: #8F5C2C;
+      font-weight: bold;
+      text-decoration: none;
+      width: 100%;
+      box-sizing: border-box;
+      display: block;
+    }
     &:hover,
-    &:active,
-    &.active {
+    &:active {
       color: #40A4C8;
     }
   }
@@ -29,14 +31,16 @@
     height: 100%;
   
     & a {
+      &:link,
+      &:visited {
       color: white;
+      font-weight: bold;
       width: 100%;
       padding: 16px 10px;
       border-bottom: 4px solid transparent;
-  
+      }   
       &:hover,
-      &:active,
-      &.active {
+      &:active {
         background-color: #8F5C2C;
         border-bottom: 4px solid #40A4C8;
         color: white;

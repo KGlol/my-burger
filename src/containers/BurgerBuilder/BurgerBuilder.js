@@ -28,7 +28,7 @@ class BurgerBuilder extends Component {
     loading: false//显示ordersummary或者spinner
   }
 
-  componentDidMount () {
+  componentWillMount () {
     axiosOrder.get('/gredents.json')//.json不要忘记
       .then( response => {
         this.setState(( prevState ) => prevState.ingredents = response.data);//解决异步性的问题
@@ -37,7 +37,7 @@ class BurgerBuilder extends Component {
       //当state=null,且需要fetch后才能在组件中使用时(DidMount),组件中使用stste的变量在DidMount之前就要使用,所以会加载失败,
   }
   
-  purchasableHandler = (ingredents) => {
+  purchasableHandler = ( ingredents ) => {
     /**
      * 1. 以addIngredentHandler中的updateIngredents作为参数出入的目的是
      *    使purchaseHandler能够获得最新的this.state.ingredents,
@@ -69,30 +69,13 @@ class BurgerBuilder extends Component {
     this.setState({purchasing: false})
   }
   //Modal组件中的continue按钮的事件处理函数
-  purchaseContinueHandler = (totalPrice) => {
-    // this.setState( { loading: true } );
-    // // alert ('Pay the money'+totalPrice);
-    // const order = {
-    //   ingredents: this.state.ingredents,
-    //   totalPrice: this.state.totalPrice,
-    //   userName: 'kg',
-    //   address: {
-    //     country: 'China',
-    //     city: 'shanghai',
-    //     location: 'scscscscs'
-    //   },
-    //   deliveryMethod: 'fastest'
-    // }
-
-    // axiosOrder.post('/orders.json', order)
-    //   .then( response => this.setState( { loading: false, purchasing: false } ) )
-    //   .catch( error => this.setState( { loading: false, purchasing: false } ) );
-    
+  purchaseContinueHandler = ( totalPrice ) => {
     //向Checkout组件传递ingredends参数
     const queryParams = [];
     for (let i in this.state.ingredents) {
       queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredents[i]));
     }
+    queryParams.push('price=' + this.state.totalPrice);
     const queryString = queryParams.join('&');
     // console.log(queryString),输出为bacon=0&cheese=0&meat=0&salad=1的字符串形式
     this.props.history.push({
@@ -101,7 +84,7 @@ class BurgerBuilder extends Component {
     });
   }
 
-  addIngredentHandler = (type) => {
+  addIngredentHandler = ( type ) => {
     const oldCount = this.state.ingredents[type];
     const updatedCount = oldCount + 1;
     const updatedIngredents = {
@@ -114,7 +97,7 @@ class BurgerBuilder extends Component {
     this.purchasableHandler(updatedIngredents);
   }
 
-  removeIngredentHandler = (type) => {
+  removeIngredentHandler = ( type ) => {
     const oldCount = this.state.ingredents[type];
     if ( oldCount <= 0 ) {
       return;
