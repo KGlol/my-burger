@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 import './index.module.scss';
 
-const app = <BrowserRouter>
+const app = <BrowserRouter basename='/burger-builder/'>
               <App />
             </BrowserRouter>
 
