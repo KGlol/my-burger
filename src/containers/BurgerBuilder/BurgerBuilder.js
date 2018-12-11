@@ -24,17 +24,22 @@ class BurgerBuilder extends Component {
     },
     totalPrice: 4,
     purchasable: false,//是否可定汉堡的变量
-    purchasing: false ,//是否弹出orderSummary的变量
-    loading: false//显示ordersummary或者spinner
+    purchasing: false,//是否弹出orderSummary的变量
+    // loading: false,//显示ordersummary或者spinner
+    ingredentsLoading: true
   }
 
   componentWillMount () {
     axiosOrder.get('/gredents.json')//.json不要忘记
       .then( response => {
-        this.setState(( prevState ) => prevState.ingredents = response.data);//解决异步性的问题
-        })
+        this.setState(( prevState ) => { 
+          prevState.ingredents = response.data//解决异步性的问题
+        });
+        this.setState({ingredentsLoading: false});
+      
         //grendents下就是内容,所以response.data中装的是内容
       //当state=null,且需要fetch后才能在组件中使用时(DidMount),组件中使用stste的变量在DidMount之前就要使用,所以会加载失败,
+    })
   }
   
   purchasableHandler = ( ingredents ) => {
@@ -142,6 +147,20 @@ class BurgerBuilder extends Component {
         canceled={this.purchaseCancelHandler} 
         continued={ this.purchaseContinueHandler}
       />;
+    console.log(this.state.ingredentsLoading);
+    const burgerBuilder = this.state.ingredentsLoading ?
+      <Spinner /> :
+      <Aux>
+        <Burger ingredents={this.state.ingredents} />
+        <BurgerControls 
+          add={this.addIngredentHandler} 
+          remove={this.removeIngredentHandler}
+          disabledInfo={disabledInfo}
+          price={this.state.totalPrice}
+          disabled={this.state.purchasable} 
+          purchasing={this.purchasingHandler}
+        />
+      </Aux>
 
     return ( 
       <Aux> 
@@ -156,15 +175,7 @@ class BurgerBuilder extends Component {
         >
           {orderSummary}
         </Madol>
-        <Burger ingredents={this.state.ingredents} />
-        <BurgerControls 
-          add={this.addIngredentHandler} 
-          remove={this.removeIngredentHandler}
-          disabledInfo={disabledInfo}
-          price={this.state.totalPrice}
-          disabled={this.state.purchasable} 
-          purchasing={this.purchasingHandler}
-      />
+        {burgerBuilder}
       </Aux>
     )
   }
